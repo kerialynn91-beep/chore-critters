@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { collection, query, onSnapshot, where, writeBatch, doc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Kid, Chore, TaskInstance, Reward, Fulfillment } from '../types';
-import { useWorkspace } from '../context/WorkspaceContext';
+import { useWorkspace } from './WorkspaceContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { Star, CheckCircle, ChevronRight, Gift, Sparkles, X, Check, Volume2 } from 'lucide-react';
 import { format } from 'date-fns';

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, onSnapshot, addDoc, doc, deleteDoc, serverTimestamp, where, writeBatch, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Kid, Chore, Reward, TaskInstance, Frequency, CategoryOrder, Fulfillment } from '../types';
-import { useWorkspace } from '../context/WorkspaceContext';
+import { useWorkspace } from './WorkspaceContext';
 import { ANIMAL_AVATARS, COLORS, CHORE_ICONS, SUGGESTED_ICONS, REWARD_ICONS } from '../constants';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Trash2, Star, Gift, LayoutDashboard, PlusCircle, UserPlus, Info, ShieldCheck, Sparkles, Pencil, GripVertical, Check, X, CheckCircle, ArrowLeft, ArrowRight, Calculator } from 'lucide-react';

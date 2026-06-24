@@ -13,7 +13,6 @@ export const googleProvider = new GoogleAuthProvider();
 export const signIn = () => signInWithPopup(auth, googleProvider);
 export const logOut = () => signOut(auth);
 
-// Connection test as per critical constraint
 async function testConnection() {
   try {
     await getDocFromServer(doc(db, '_connection_test', 'test'));
