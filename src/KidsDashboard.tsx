@@ -93,27 +93,38 @@ const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => 
   );
 };
 
-// Robust helper to retrieve a friendly, cheerful female voice
+// Robust helper
 export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
   if (typeof window === 'undefined' || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices();
   if (!voices || voices.length === 0) return null;
-  const ukFemale = voices.find(v => 
-    v.lang.toLowerCase().includes('en-gb') && 
-    (v.name.includes('Female') || v.name.includes('Serena') || v.name.includes('Susan') || v.name.includes('Hazel') || v.name.includes('Kate') || v.name.includes('Sonia'))
-  );
+
+  const bannedMaleNames = ['male', 'daniel', 'george', 'arthur', 'alex', 'fred', 'bruce', 'rishi', 'aaron', 'gordon', 'mark'];
+  
+  const filteredVoices = voices.filter(v => {
+    const name = v.name.toLowerCase();
+    if (bannedMaleNames.some(banned => name.includes(banned)) && !name.includes('female')) {
+      return false;
+    }
+    return true;
+  });
+
+  const targetVoices = filteredVoices.length > 0 ? filteredVoices : voices;
+  const ukFemale = targetVoices.find(v => {
+    const lang = v.lang.toLowerCase();
+    const name = v.name.toLowerCase();
+    return lang.includes('en-gb') && 
+      (name.includes('female') || name.includes('serena') || name.includes('susan') || name.includes('hazel') || name.includes('kate') || name.includes('martha') || name.includes('sonia'));
+  });
   if (ukFemale) return ukFemale;
-  const anyFemaleEnglish = voices.find(v => 
-    v.lang.toLowerCase().startsWith('en') && 
-    !v.name.toLowerCase().includes('male') &&
-    (v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Zira') || v.name.includes('Karen') || v.name.includes('Moira') || v.name.includes('Tessa'))
-  );
-  if (anyFemaleEnglish) return anyFemaleEnglish;
-  const generalFemale = voices.find(v => v.name.toLowerCase().includes('female'));
-  if (generalFemale) return generalFemale;
-  const ukFallback = voices.find(v => v.lang.toLowerCase().includes('en-gb'));
+  const anyFemale = targetVoices.find(v => {
+    const name = v.name.toLowerCase();
+    return name.includes('female') || name.includes('samantha') || name.includes('zira') || name.includes('victoria') || name.includes('karen') || name.includes('moira') || name.includes('tessa') || name.includes('catherine');
+  });
+  if (anyFemale) return anyFemale;
+  const ukFallback = targetVoices.find(v => v.lang.toLowerCase().includes('en-gb'));
   if (ukFallback) return ukFallback;
-  return voices[0] || null;
+  return targetVoices[0] || null;
 };
 
 export default function KidsDashboard() {
