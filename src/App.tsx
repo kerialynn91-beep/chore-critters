@@ -3,8 +3,8 @@ import { AnimatePresence } from 'motion/react';
 import { ShieldCheck, Star } from 'lucide-react';
 
 // Views
-import KidsDashboard from '.KidsDashboard';
-import ParentDashboard from '.ParentDashboard';
+import KidsDashboard from './KidsDashboard';
+import ParentDashboard from './ParentDashboard';
 import Home from './Home';
 import FamilyChoreChart from './FamilyChoreChart';
 
