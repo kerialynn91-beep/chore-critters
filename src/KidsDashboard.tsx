@@ -14,19 +14,35 @@ const HABITATS = {
   FARM: 'farm',
   OCEAN: 'ocean',
   DOMESTIC: 'domestic',
-  GARDEN: 'garden'
+  GARDEN: 'garden',
+  BIRD: 'bird'
 } as const;
 
 type HabitatType = typeof HABITATS[keyof typeof HABITATS];
 
 const getHabitatForAvatar = (avatar: string): HabitatType => {
-  const categories = {
-    [HABITATS.JUNGLE]: ['🐯', '🦁', '🐵', '🦍', '🐘', '🦛', '🦏', '🦒', '🐆', '🦓', '🐅', '🐍', '🦎', '🐊', '🐒'],
-    [HABITATS.FANTASY]: ['🦄', '🐉', '🐲', '🦕', '🦖', '🦇', '🐺'],
-    [HABITATS.FARM]: ['🐮', '🐷', '🐔', '🐣', '🐤', '🐑', '🐐', '🐄', '🐎', '🐏', '🐃', '🐂'],
-    [HABITATS.OCEAN]: ['🐙', '🦑', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐚', '🐢', '🐧', '🦆'],
-    [HABITATS.DOMESTIC]: ['🐶', '🐱', '🐹', '🐕', '🐈', '🦔', '🐿️'],
-    [HABITATS.GARDEN]: ['🦋', '🐰', '🐇', '🐝', '🐛', '🐌', '🐞', '🐜', '🐦', '🦅', '🦉', '🦊', '🐻', '🐼', '🐨', '🦘', '🦌', '🐗']
+  const categories: Record<HabitatType, string[]> = {
+    [HABITATS.JUNGLE]: [
+      '🐯', '🦁', '🐵', '🦍', '🐘', '🦛', '🦏', '🦒', '🐆', '🦓', '🐅', '🐍', '🦎', '🐊', '🐒'
+    ],
+    [HABITATS.FANTASY]: [
+      '🦄', '🐉', '🐲', '🦕', '🦖', '🦇', '🐺'
+    ],
+    [HABITATS.FARM]: [
+      '🐮', '🐷', '🐔', '🐣', '🐤', '🐑', '🐐', '🐄', '🐎', '🐏', '🐃', '🐂', '🐴'
+    ],
+    [HABITATS.OCEAN]: [
+      '🐙', '🦑', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐚', '🐢', '🐧'
+    ],
+    [HABITATS.DOMESTIC]: [
+      '🐶', '🐱', '🐹', '🐕', '🐈', '🦔', '🐿️', '🐭'
+    ],
+    [HABITATS.BIRD]: [
+      '🐦', '🦅', '🦉', '🦆'
+    ],
+    [HABITATS.GARDEN]: [
+      '🦋', '🐰', '🐇', '🐝', '🐛', '🐌', '🐞', '🐜', '🦊', '🐻', '🐼', '🐨', '🦘', '🦌', '🐗', '🐸'
+    ]
   };
 
   for (const [habitat, emojis] of Object.entries(categories)) {
@@ -38,389 +54,85 @@ const getHabitatForAvatar = (avatar: string): HabitatType => {
 const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => {
   const getStyles = () => {
     switch (habitat) {
-      case 'jungle':
-        return {
-          gradient: 'from-emerald-900 to-green-950',
-          pattern: (
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {/* Sun filtering through */}
-              <div className="absolute top-0 left-1/4 w-[40rem] h-[40rem] bg-yellow-500/10 rounded-full blur-3xl" />
-              
-              {/* Vector Jungle SVGs */}
-              <svg className="absolute inset-x-0 bottom-0 w-full h-[60%] opacity-30 text-emerald-800" viewBox="0 0 1440 600" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Background trees */}
-                <path d="M120 600V200C120 200 180 150 250 200C320 250 350 180 420 150C490 120 540 220 600 200C660 180 720 120 800 180C880 240 920 180 1000 160C1080 140 1150 220 1250 220C1350 220 1400 300 1440 320V600H120Z" fill="currentColor" fillOpacity="0.4" />
-                
-                {/* Foreground larger leaves & trees */}
-                <path d="M0 600V100C0 100 40 50 100 100C160 150 200 120 250 80C300 40 350 120 450 100C550 80 600 200 700 180C800 160 850 100 950 140C1050 180 1100 90 1200 110C1300 130 1380 250 1440 280V600H0Z" fill="currentColor" fillOpacity="0.7" />
-              </svg>
-
-              {/* Hanging Vines from Top */}
-              <svg className="absolute top-0 inset-x-0 w-full h-[40%] opacity-30 text-emerald-850" viewBox="0 0 1440 400" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Left vine with leaves */}
-                <path d="M 50,-50 Q 80,100 60,250 T 100,400" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-                <path d="M60 120 C70 120 80 140 60 150 C40 140 50 120 60 120" fill="currentColor" />
-                <path d="M70 200 C85 205 90 220 70 230 C50 220 55 205 70 200" fill="currentColor" />
-                
-                {/* Center vine */}
-                <path d="M 720,-50 Q 750,150 700,280 T 730,380" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                <path d="M 725 150 C 740 150 750 165 725 180 C 700 165 710 150 725 150" fill="currentColor" />
-                
-                {/* Right vine */}
-                <path d="M 1300,-50 Q 1250,120 1280,260 T 1250,420" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-                <path d="M 1260 180 C 1245 180 1235 195 1260 210 C 1285 195 1275 180 1260 180" fill="currentColor" />
-              </svg>
-
-              {/* Little floating elements/leaves */}
-              {[...Array(12)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ 
-                    y: [0, -40, 0], 
-                    x: [0, 15, 0], 
-                    opacity: [0.1, 0.4, 0.1],
-                    rotate: [0, 45, 0]
-                  }}
-                  transition={{ 
-                    duration: 6 + Math.random() * 8, 
-                    repeat: Infinity,
-                    delay: Math.random() * i
-                  }}
-                  className="absolute text-emerald-300 text-lg opacity-20 pointer-events-none"
-                  style={{
-                    left: `${10 + Math.random() * 80}%`,
-                    top: `${20 + Math.random() * 60}%`,
-                  }}
-                >
-                  🍃
-                </motion.div>
-              ))}
-            </div>
-          )
-        };
+      case 'bird':
+        return { gradient: 'from-sky-300 via-sky-200 to-white', image: '/7.png' };
       case 'fantasy':
-        return {
-          gradient: 'from-sky-400 via-sky-200 to-white',
-          pattern: (
-             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-               {/* Warm bright soft sun in the sky */}
-               <div className="absolute top-[8%] left-[15%] w-36 h-36 rounded-full bg-yellow-100/30 blur-2xl" />
-
-               {/* Layered Realistic Slate & Blue Cartoon Mountains */}
-               <svg className="absolute inset-x-0 bottom-0 w-full h-[55%] opacity-40 text-slate-700" viewBox="0 0 1440 600" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                 {/* Far Back Mountain line - lighter grayish blue */}
-                 <path d="M0 600 L150 400 L400 500 L650 320 L950 480 L1200 350 L1440 500 L1440 600 Z" fill="#64748b" fillOpacity="0.4" />
-                 
-                 {/* Middle Mountain line with distinct peaks - medium slate */}
-                 <path d="M0 320 L250 410 L500 520 L800 360 L1100 490 L1350 380 L1440 450 L1440 600 Z" fill="#475569" fillOpacity="0.6" />
-                 
-                 {/* Foreground Mountain tips - deep rich slate-gray */}
-                 <path d="M0 600 L150 480 L350 430 L600 530 L900 420 L1150 510 L1440 410 L1440 600 Z" fill="#334155" fillOpacity="0.8" />
-               </svg>
-
-               {/* Fluffy Cartoon Clouds (white and grey) drifting slowly */}
-               {[
-                 { top: '10%', left: '5%', size: 'scale-[1.2]', duration: 42, delay: 0, color: 'text-white' },
-                 { top: '22%', left: '42%', size: 'scale-[1.4]', duration: 52, delay: -12, color: 'text-slate-100' },
-                 { top: '15%', left: '72%', size: 'scale-[0.95]', duration: 46, delay: -4, color: 'text-white' },
-                 { top: '32%', left: '15%', size: 'scale-[1.3]', duration: 58, delay: -22, color: 'text-slate-200/90' },
-                 { top: '28%', left: '78%', size: 'scale-[1.1]', duration: 49, delay: -8, color: 'text-white/95' },
-               ].map((cloud, i) => (
-                 <motion.div
-                   key={i}
-                   animate={{ x: ['-30%', '130%'] }}
-                   transition={{ duration: cloud.duration, repeat: Infinity, ease: 'linear', delay: cloud.delay }}
-                   className={`absolute opacity-90 filter drop-shadow-md ${cloud.color} ${cloud.size}`}
-                   style={{ top: cloud.top, left: cloud.left }}
-                 >
-                   <svg width="200" height="100" viewBox="0 0 200 100" fill="currentColor">
-                     <path d="M 30,70 A 25,25 0 0,1 45,30 A 35,35 0 0,1 110,25 A 30,30 0 0,1 155,40 A 25,25 0 0,1 170,70 Z" />
-                   </svg>
-                 </motion.div>
-               ))}
-             </div>
-          )
-        };
+        return { gradient: 'from-sky-400 via-sky-200 to-white', image: '/8.png' };
+      case 'jungle':
+        return { gradient: 'from-emerald-900 to-green-950', image: '/4.png' };
       case 'farm':
-        return {
-          gradient: 'from-amber-50 to-sky-200',
-          pattern: (
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {/* Sun in the corner */}
-              <div className="absolute top-10 right-20 w-36 h-36 rounded-full bg-yellow-300/30 blur-2xl" />
-              <div className="absolute top-16 right-26 w-24 h-24 rounded-full bg-yellow-400/20 border-4 border-yellow-200/20" />
-
-              {/* Floating white clouds */}
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ x: ['-40%', '130%'] }}
-                  transition={{ duration: 45 + i * 12, repeat: Infinity, ease: 'linear', delay: i * -15 }}
-                  className="absolute opacity-25 text-white scale-75"
-                  style={{ top: `${15 + i * 12}%`, left: `${10 + i * 20}%` }}
-                >
-                  <svg width="180" height="90" viewBox="0 0 200 100" fill="currentColor">
-                    <path d="M 30,70 A 25,25 0 0,1 45,30 A 35,35 0 0,1 110,25 A 30,30 0 0,1 155,40 A 25,25 0 0,1 170,70 Z" />
-                  </svg>
-                </motion.div>
-              ))}
-
-              {/* Rolling Green Hills */}
-              <svg className="absolute inset-x-0 bottom-0 w-full h-[50%] opacity-30 text-emerald-600" viewBox="0 0 1440 600" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0 600 V350 C300 250, 450 450, 800 300 C1100 200, 1300 350, 1440 320 V600 H0Z" fill="currentColor" fillOpacity="0.4" />
-                <path d="M0 600 V400 C400 350, 600 250, 1000 400 C1200 450, 1350 350, 1440 370 V600 H0Z" fill="currentColor" fillOpacity="0.6" />
-                <path d="M0 600 V460 C250 400, 550 460, 850 380 C1150 320, 1300 460, 1440 450 V600 H0Z" fill="currentColor" fillOpacity="0.8" />
-              </svg>
-
-              {/* Cartoon Barn House in background */}
-              <div className="absolute bottom-[15%] left-[10%] w-48 h-40 opacity-20 flex flex-col items-center">
-                {/* Roof */}
-                <div className="w-0 h-0 border-l-[60px] border-l-transparent border-r-[60px] border-r-transparent border-b-[40px] border-b-red-700" />
-                {/* Barn Body */}
-                <div className="w-24 h-24 bg-red-600 relative border-l-4 border-r-4 border-b-4 border-red-700 flex justify-center items-end">
-                  {/* Cross wood door lines */}
-                  <div className="w-10 h-14 bg-white/10 border-2 border-white/20 relative">
-                     <div className="absolute inset-0 border-t-2 border-white/20 rotate-45 transform origin-top-left" style={{ width: '141%' }} />
-                     <div className="absolute inset-0 border-t-2 border-white/20 -rotate-45 transform origin-top-right" style={{ width: '141%' }} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Wooden Fence silhouette */}
-              <div className="absolute bottom-[8%] right-[15%] opacity-15 flex gap-1">
-                {[...Array(6)].map((_, idx) => (
-                  <div key={idx} className="relative flex flex-col items-center">
-                    <div className="w-3 h-16 bg-amber-850 rounded-t-md" />
-                    {idx < 5 && <div className="absolute top-4 left-2 w-12 h-2 bg-amber-850" />}
-                    {idx < 5 && <div className="absolute top-10 left-2 w-12 h-2 bg-amber-850" />}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )
-        };
+        return { gradient: 'from-amber-50 to-sky-200', image: '/2.png' };
       case 'ocean':
-        return {
-          gradient: 'from-sky-400 via-cyan-800 to-blue-950',
-          pattern: (
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {/* Sunbeams under sea */}
-              <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-white/10 to-transparent opacity-40" style={{ clipPath: 'polygon(15% 0%, 35% 0%, 55% 100%, 25% 100%)' }} />
-              <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-white/10 to-transparent opacity-40" style={{ clipPath: 'polygon(60% 0%, 75% 0%, 90% 100%, 70% 100%)' }} />
-
-              {/* Air Bubbles */}
-              {[...Array(15)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ 
-                    y: ['110vh', '-10vh'], 
-                    x: [0, (i % 2 === 0 ? 15 : -15), 0]
-                  }}
-                  transition={{ 
-                    duration: 10 + Math.random() * 8, 
-                    repeat: Infinity, 
-                    ease: 'easeInOut',
-                    delay: Math.random() * 10
-                  }}
-                  className="absolute rounded-full border border-white/25 bg-white/5 shadow-inner"
-                  style={{ 
-                    left: `${Math.random() * 100}%`, 
-                    width: `${Math.max(6, Math.random() * 20)}px`,
-                    height: `${Math.max(6, Math.random() * 20)}px`
-                  }}
-                />
-              ))}
-
-              {/* Sea bed with plants */}
-              <svg className="absolute inset-x-0 bottom-0 w-full h-[40%] opacity-20 text-cyan-900" viewBox="0 0 1440 400" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Seabed */}
-                <path d="M0 400 V300 C300 280, 500 350, 800 290 C1100 250, 1250 320, 1440 300 V400 H0Z" fill="#1e3a8a" fillOpacity="0.8" />
-                <path d="M0 400 V340 C400 320, 700 380, 1000 330 C1200 310, 1350 360, 1440 350 V400 H0Z" fill="#0f172a" fillOpacity="0.6" />
-                
-                {/* Seaweed */}
-                <path d="M150 320 Q130 200 160 100 T140 20 Q160 100 170 200 T150 320" fill="currentColor" fillOpacity="0.7" />
-                <path d="M190 340 Q210 240 180 150 T200 50 Q180 150 210 240 T190 340" fill="currentColor" fillOpacity="0.5" />
-                <path d="M1200 310 Q1220 200 1190 120 T1210 40 Q1190 120 1230 200 T1200 310" fill="currentColor" fillOpacity="0.7" />
-                <path d="M1250 330 Q1230 220 1260 140 T1240 60 Q1260 140 1270 220 T1250 330" fill="currentColor" fillOpacity="0.6" />
-              </svg>
-            </div>
-          )
-        };
-      case 'domestic': {
-        // Generate beautiful zigzagging trails of varied paw prints along the left and right margins
-        const dogTrail = [
-          { top: '86%', left: '3%', r: -15 },
-          { top: '76%', left: '10%', r: 25 },
-          { top: '66%', left: '4%', r: -10 },
-          { top: '56%', left: '11%', r: 35 },
-          { top: '46%', left: '3%', r: -20 },
-          { top: '36%', left: '10%', r: 30 },
-          { top: '26%', left: '2%', r: -5 },
-          { top: '14%', left: '8%', r: -35 },
-        ];
-
-        const catTrail = [
-          { top: '84%', left: '94%', r: 15 },
-          { top: '74%', left: '87%', r: -25 },
-          { top: '64%', left: '93%', r: 20 },
-          { top: '54%', left: '86%', r: -30 },
-          { top: '44%', left: '92%', r: 10 },
-          { top: '34%', left: '85%', r: -20 },
-          { top: '24%', left: '91%', r: 5 },
-          { top: '14%', left: '84%', r: -45 },
-        ];
-
-        const bunnyTrail = [
-          { top: '80%', left: '14%', r: -20 },
-          { top: '70%', left: '21%', r: 15 },
-          { top: '60%', left: '15%', r: -30 },
-          { top: '50%', left: '22%', r: 25 },
-          { top: '40%', left: '16%', r: -15 },
-          { top: '30%', left: '23%', r: 10 },
-          { top: '20%', left: '15%', r: -40 },
-          { top: '10%', left: '22%', r: 5 },
-        ];
-
-        return {
-          gradient: 'from-amber-100 via-rose-50 to-orange-100/95',
-          pattern: (
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {/* Soft pet wallpaper base pattern */}
-              <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#f43f5e_1px,transparent_1px)] [background-size:24px_24px]" />
-
-              {/* Dog Paw Prints Trail (Zigzagging, warm rose-copper tint) */}
-              {dogTrail.map((p, i) => (
-                <motion.div
-                  key={`dog-${i}`}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ 
-                    opacity: [0.25, 0.6, 0.25], 
-                    scale: [0.95, 1.05, 0.95],
-                    rotate: p.r
-                  }}
-                  transition={{ duration: 4.5, repeat: Infinity, delay: i * 0.3 }}
-                  className="absolute text-rose-450 pointer-events-none text-4xl md:text-5xl"
-                  style={{ top: p.top, left: p.left }}
-                >
-                  🐾
-                </motion.div>
-              ))}
-
-              {/* Cat Paw Prints Trail (Delicate steps, soft amber gold tint) */}
-              {catTrail.map((p, i) => (
-                <motion.div
-                  key={`cat-${i}`}
-                  initial={{ opacity: 0, scale: 0.6 }}
-                  animate={{ 
-                    opacity: [0.3, 0.65, 0.3], 
-                    scale: [0.95, 1.05, 0.95],
-                    rotate: p.r
-                  }}
-                  transition={{ duration: 4.8, repeat: Infinity, delay: i * 0.35 }}
-                  className="absolute text-amber-500 pointer-events-none text-3xl md:text-4xl"
-                  style={{ top: p.top, left: p.left }}
-                >
-                  🐾
-                </motion.div>
-              ))}
-
-              {/* Bunny Hop Footprints (Paired tiny hops, soft terracotta coral tint) */}
-              {bunnyTrail.map((p, i) => (
-                <motion.div
-                  key={`bunny-${i}`}
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ 
-                    opacity: [0.3, 0.7, 0.3], 
-                    scale: [0.95, 1.05, 0.95],
-                    rotate: p.r
-                  }}
-                  transition={{ duration: 4.2, repeat: Infinity, delay: i * 0.25 }}
-                  className="absolute flex gap-1 items-center text-rose-600 pointer-events-none text-2xl md:text-3xl"
-                  style={{ top: p.top, left: p.left }}
-                >
-                  <span>🐾</span>
-                  <span className="mt-[2px]">🐾</span>
-                </motion.div>
-              ))}
-            </div>
-          )
-        };
-      }
+        return { gradient: 'from-sky-400 via-cyan-800 to-blue-950', image: '/Untitled design (26).png' };
+      case 'domestic':
+        return { gradient: 'from-amber-100 via-rose-50 to-orange-100/95', image: '/6.png' };
       case 'garden':
-        return {
-          gradient: 'from-amber-150 to-green-300',
-          pattern: (
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute top-8 left-12 w-28 h-28 rounded-full bg-yellow-300/40 border border-yellow-200/20 blur-xl animate-pulse" />
-              
-              {/* Fluttering butterflies/pollen */}
-              {[...Array(10)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ 
-                    y: [0, -30, 0],
-                    x: [0, Math.sin(i) * 35, 0],
-                    scale: [1, 1.15, 1],
-                    rotate: [0, i % 2 === 0 ? 30 : -30, 0]
-                  }}
-                  transition={{ duration: 7 + Math.random() * 5, repeat: Infinity, delay: Math.random() * 4 }}
-                  className="absolute text-emerald-600/30 text-2xl"
-                  style={{
-                    left: `${15 + Math.random() * 70}%`,
-                    top: `${15 + Math.random() * 55}%`,
-                  }}
-                >
-                  {i % 2 === 0 ? '🦋' : '🌸'}
-                </motion.div>
-              ))}
-
-              {/* Layered Grass & Flowers */}
-              <svg className="absolute inset-x-0 bottom-0 w-full h-[50%] opacity-25 text-emerald-800" viewBox="0 0 1440 500" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Grass hills */}
-                <path d="M0 500 Q 250 400 500 480 T 1000 450 T 1440 430 V 500 H 0 Z" fill="currentColor" fillOpacity="0.4" />
-                <path d="M0 500 Q 300 460 600 440 T 1200 460 T 1440 460 V 500 H 0 Z" fill="currentColor" fillOpacity="0.6" />
-                
-                {/* Flower stalks */}
-                <path d="M220 500 L220 400" stroke="currentColor" strokeWidth="3" />
-                <circle cx="220" cy="400" r="10" fill="#facc15" />
-                <path d="M250 500 L250 380" stroke="currentColor" strokeWidth="4" />
-                <circle cx="250" cy="380" r="12" fill="#f43f5e" />
-                <path d="M1100 500 L1100 410" stroke="currentColor" strokeWidth="3" />
-                <circle cx="1100" cy="410" r="11" fill="#ec4899" />
-                <path d="M1140 500 L1130 390" stroke="currentColor" strokeWidth="3" />
-                <circle cx="1130" cy="390" r="9" fill="#06b6d4" />
-              </svg>
-            </div>
-          )
-        };
+        return { gradient: 'from-amber-100 to-green-300', image: '/Chore Critters habitats.png' };
       case 'picker':
-        return {
-          gradient: 'from-slate-800 via-slate-900 to-slate-950',
-          pattern: (
-             <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
-                <Sparkles className="w-full h-full text-white/5 blur-sm" />
-                {[...Array(10)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    animate={{ opacity: [0.1, 0.3, 0.1], scale: [1, 1.2, 1] }}
-                    transition={{ duration: 5 + Math.random() * 5, repeat: Infinity }}
-                    className="absolute w-64 h-64 bg-yellow-400/5 rounded-full blur-3xl"
-                    style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
-                  />
-                ))}
-             </div>
-          )
-        };
+      default:
+        return { gradient: 'from-slate-800 via-slate-900 to-slate-950', image: null };
     }
   };
 
-  const { gradient, pattern } = getStyles();
+  const { gradient, image } = getStyles();
 
   return (
     <div className={`fixed inset-0 z-0 bg-gradient-to-b ${gradient} transition-all duration-1000 overflow-hidden`}>
-      {pattern}
+      {image && (
+        <img
+          src={image}
+          alt={habitat}
+          className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none opacity-90 animate-in fade-in duration-1000"
+          referrerPolicy="no-referrer"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
+        />
+      )}
     </div>
   );
+};
+
+// Robust helper
+// Robust helper to retrieve a friendly, cheerful female voice
+export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
+  if (typeof window === 'undefined' || !window.speechSynthesis) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return null;
+
+  const bannedMaleNames = ['male', 'daniel', 'george', 'arthur', 'alex', 'fred', 'bruce', 'rishi', 'aaron', 'gordon', 'mark'];
+  
+  const filteredVoices = voices.filter(v => {
+    const name = v.name.toLowerCase();
+    if (bannedMaleNames.some(banned => name.includes(banned)) && !name.includes('female')) {
+      return false;
+    }
+    return true;
+  });
+
+  const targetVoices = filteredVoices.length > 0 ? filteredVoices : voices;
+
+  // 1. FIRST CHOICE: Any clear English Female voices (US/AU/etc. - This brings back the younger/American voice!)
+  const anyFemale = targetVoices.find(v => {
+    const lang = v.lang.toLowerCase();
+    const name = v.name.toLowerCase();
+    return lang.startsWith('en') && 
+      (name.includes('female') || name.includes('samantha') || name.includes('zira') || name.includes('victoria') || name.includes('karen') || name.includes('moira') || name.includes('tessa') || name.includes('catherine'));
+  });
+  if (anyFemale) return anyFemale;
+
+  // 2. SECOND CHOICE: Premium British English Female voices (Fallback)
+  const ukFemale = targetVoices.find(v => {
+    const lang = v.lang.toLowerCase();
+    const name = v.name.toLowerCase();
+    return lang.includes('en-gb') && 
+      (name.includes('female') || name.includes('serena') || name.includes('susan') || name.includes('hazel') || name.includes('kate') || name.includes('martha') || name.includes('sonia'));
+  });
+  if (ukFemale) return ukFemale;
+  
+  const ukFallback = targetVoices.find(v => v.lang.toLowerCase().includes('en-gb'));
+  if (ukFallback) return ukFallback;
+  return targetVoices[0] || null;
 };
 
 export default function KidsDashboard() {
@@ -434,8 +146,17 @@ export default function KidsDashboard() {
   const [chores, setChores] = useState<Chore[]>([]);
 
   const validTasks = React.useMemo(() => {
-    return tasks.filter(t => chores.some(c => c.id === t.choreId) || t.status === 'completed' || !!t.choreTitle);
-  }, [tasks, chores]);
+    return tasks.filter(t => {
+      const chore = chores.find(c => c.id === t.choreId);
+      if (!chore) {
+        return t.status === 'completed' || !!t.choreTitle;
+      }
+      if (t.status === 'pending' && (!chore.assignedTo || !chore.assignedTo.includes(selectedKid?.id || ''))) {
+        return false;
+      }
+      return true;
+    });
+  }, [tasks, chores, selectedKid?.id]);
 
   const [fulfillments, setFulfillments] = useState<Fulfillment[]>([]);
   const [categoryOrder, setCategoryOrder] = useState<string[]>([]);
@@ -443,7 +164,23 @@ export default function KidsDashboard() {
   const [interceptReward, setInterceptReward] = useState<Reward | null>(null);
   const [showCelebration, setShowCelebration] = useState<{ avatar: string; color: string } | null>(null);
 
-  const triggerCelebration = (avatar: string, color: string) => {
+  // Warm up and initialize speech synthesis voices to ensure they are ready instantly
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      
+      const handleVoicesChanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+      
+      window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged);
+      return () => {
+        window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
+      };
+    }
+  }, []);
+
+const triggerCelebration = (avatar: string, color: string) => {
     setShowCelebration({ avatar, color });
     
     // Play a delightful, programmatically synthesized 2-3 second happy celebration jingle
@@ -503,7 +240,6 @@ export default function KidsDashboard() {
         };
 
         // Synthesize an adorable, harmonized 3-voice chord sequence that slides musically upwards in C Major:
-        // Chord 1 (Root, 3rd, 5th): C5 (523.25) -> Chord 2: D5 (587.33) -> Chord 3: E5 (659.25)
         createCuteVocalVoice(523.25, [
           { t: 0.22, f: 587.33 },
           { t: 0.44, f: 659.25 }
@@ -561,22 +297,14 @@ export default function KidsDashboard() {
         const selectedSong = songs[Math.floor(Math.random() * songs.length)];
         
         const utterance = new SpeechSynthesisUtterance(selectedSong);
-        utterance.rate = 1.35; // Fast, bouncy, cheerful tempo to fit under 2 seconds!
+        utterance.rate = 1.25; // Fast, bouncy, cheerful tempo to fit under 2 seconds!
         utterance.pitch = 1.45; // Sweet, high-pitched, childish and super enthusiastic
 
-        // Select an optimal kid-friendly/high-pitched english voice if available
-        const voices = window.speechSynthesis.getVoices();
-        const preferredVoice = voices.find(v => 
-          (v.name.includes('Google') && v.name.includes('English')) || 
-          v.name.includes('Samantha') || 
-          v.name.includes('Zira') || 
-          v.lang.startsWith('en-')
-        );
+        const preferredVoice = getCheerfulFemaleVoice();
         if (preferredVoice) {
           utterance.voice = preferredVoice;
         }
 
-        // Slight offset so the opening singing chord music triggers first to build anticipation
         setTimeout(() => {
           window.speechSynthesis.speak(utterance);
         }, 150);
@@ -705,7 +433,7 @@ export default function KidsDashboard() {
                  pointsValue: chore.points,
                  isBonus: chore.isBonus || false,
                   choreTitle: chore.title,
-                  choreIcon: chore.icon,
+                  choreIcon: chore.icon || '🚀',
                   choreCategory: chore.category || ''
                });
                allExistingChoreIds.add(chore.id);
@@ -757,26 +485,21 @@ export default function KidsDashboard() {
 
     const workAheadTasks = otherTasks.filter(t => {
       const chore = chores.find(c => c.id === t.choreId);
-      // Exclude weekly chores that occur on specific days of the week from work-ahead listings on other days
       if (chore && chore.frequency === 'weekly' && chore.days && chore.days.length > 0) {
         return false;
       }
       if (t.status === 'completed') {
-        // If it was completed TODAY but was due in the future
         const compDateStr = typeof t.completedAt === 'string' ? t.completedAt.split('T')[0] : '';
         return compDateStr === todayStr && t.dueDate > todayStr && t.dueDate <= weekEndStr;
       } else {
-        // Pending future tasks for specific frequencies
         const isHighFrequency = chore && (chore.frequency === 'weekly' || chore.frequency === 'by-deadline' || chore.frequency === 'monthly');
         return isHighFrequency && t.dueDate > todayStr && t.dueDate <= weekEndStr;
       }
     });
 
-    // Combine and deduplicate: Only show ONE pending instance per chore for future/overdue to avoid clutter
     const combined = [...dayTasks];
     const seenChoreIds = new Set(dayTasks.map(t => t.choreId));
 
-    // Add overdue (don't add if already showing a task for this chore today)
     overdueTasks.forEach(t => {
       if (!seenChoreIds.has(t.choreId)) {
         combined.push(t);
@@ -909,14 +632,7 @@ export default function KidsDashboard() {
   const speak = (text: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
-      const voices = window.speechSynthesis.getVoices();
-      // Try to find a gentle female voice
-      const gentleVoice = voices.find(v => 
-        (v.name.includes('Google') && v.name.includes('English')) || 
-        v.name.includes('Samantha') || 
-        v.name.includes('Zira') || 
-        v.name.includes('Female')
-      );
+      const gentleVoice = getCheerfulFemaleVoice();
       if (gentleVoice) utterance.voice = gentleVoice;
       utterance.rate = 0.85; // Slightly slower for clarity
       utterance.pitch = 1.0;  // More natural pitch
@@ -1610,13 +1326,7 @@ function ChoreCard({ task, chore, kid, isPastDate = false, onComplete }: { task:
     if ('speechSynthesis' in window) {
       const text = `${chore?.title || 'Task'}. Worth ${task.pointsValue} stars.`;
       const utterance = new SpeechSynthesisUtterance(text);
-      const voices = window.speechSynthesis.getVoices();
-      const gentleVoice = voices.find(v => 
-        (v.name.includes('Google') && v.name.includes('English')) || 
-        v.name.includes('Samantha') || 
-        v.name.includes('Zira') || 
-        v.name.includes('Female')
-      );
+      const gentleVoice = getCheerfulFemaleVoice();
       if (gentleVoice) utterance.voice = gentleVoice;
       utterance.rate = 0.85;
       utterance.pitch = 1.0;
@@ -1793,13 +1503,7 @@ function RewardCard({ reward, kid }: { reward: Reward, kid: Kid, key?: React.Key
     if ('speechSynthesis' in window) {
       const text = `${reward.title}. Costs ${reward.cost} stars. ${canAfford ? 'You have enough stars!' : `You need ${reward.cost - (kid.stars || 0)} more stars.`}`;
       const utterance = new SpeechSynthesisUtterance(text);
-      const voices = window.speechSynthesis.getVoices();
-      const gentleVoice = voices.find(v => 
-        (v.name.includes('Google') && v.name.includes('English')) || 
-        v.name.includes('Samantha') || 
-        v.name.includes('Zira') || 
-        v.name.includes('Female')
-      );
+      const gentleVoice = getCheerfulFemaleVoice();
       if (gentleVoice) utterance.voice = gentleVoice;
       utterance.rate = 0.85;
       utterance.pitch = 1.0;
