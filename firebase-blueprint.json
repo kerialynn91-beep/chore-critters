@@ -1,0 +1,122 @@
+{
+  "entities": {
+    "Kid": {
+      "title": "Kid",
+      "description": "A kid in the family who can earn stars.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "avatar": { "type": "string", "description": "Animal avatar emoji or URL" },
+        "stars": { "type": "number", "description": "Current star balance" },
+        "color": { "type": "string", "description": "Hex color code for branding" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "avatar", "stars"]
+    },
+    "Chore": {
+      "title": "Chore",
+      "description": "A recurring task defined by parents.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "points": { "type": "number" },
+        "frequency": { "type": "string", "enum": ["daily", "weekly", "monthly", "by-deadline"] },
+        "days": { "type": "array", "description": "Days of week (0-6) or monthly date" },
+        "assignedTo": { "type": "array", "description": "Array of Kid IDs" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "order": { "type": "number" }
+      },
+      "required": ["title", "points", "frequency", "assignedTo", "order"]
+    },
+    "TaskInstance": {
+      "title": "TaskInstance",
+      "description": "A specific instance of a chore for a specific kid and date.",
+      "type": "object",
+      "properties": {
+        "choreId": { "type": "string" },
+        "kidId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "completed"] },
+        "dueDate": { "type": "string", "description": "YYYY-MM-DD" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "pointsValue": { "type": "number" }
+      },
+      "required": ["choreId", "kidId", "status", "dueDate", "pointsValue"]
+    },
+    "Reward": {
+      "title": "Reward",
+      "description": "Something kids can buy with stars.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "cost": { "type": "number" },
+        "icon": { "type": "string" },
+        "active": { "type": "boolean" },
+        "type": { "type": "string", "enum": ["kid", "family"] },
+        "allowedKids": { "type": "array", "items": { "type": "string" } },
+        "order": { "type": "number" }
+      },
+      "required": ["title", "cost", "icon", "type", "order"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Star balance changes.",
+      "type": "object",
+      "properties": {
+        "kidId": { "type": "string" },
+        "amount": { "type": "number", "description": "Positive for earn, negative for spend" },
+        "type": { "type": "string", "enum": ["earn", "spend", "bonus", "penalty", "undo"] },
+        "description": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["kidId", "amount", "type", "timestamp"]
+    },
+    "CategoryOrder": {
+      "title": "CategoryOrder",
+      "description": "Preserves the order of chore categories.",
+      "type": "object",
+      "properties": {
+        "categories": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["categories"]
+    },
+    "PasscodeConfig": {
+      "title": "PasscodeConfig",
+      "description": "Configuration for parent authentication.",
+      "type": "object",
+      "properties": {
+        "passcode": { "type": "string", "minLength": 4, "maxLength": 4 }
+      },
+      "required": ["passcode"]
+    },
+    "Fulfillment": {
+      "title": "Fulfillment",
+      "description": "Tracking of purchased rewards that need to be given by parents.",
+      "type": "object",
+      "properties": {
+        "kidId": { "type": "string" },
+        "rewardId": { "type": "string" },
+        "rewardTitle": { "type": "string" },
+        "rewardIcon": { "type": "string" },
+        "cost": { "type": "number" },
+        "type": { "type": "string", "enum": ["kid", "family"] },
+        "status": { "type": "string", "enum": ["pending", "filled"] },
+        "purchasedAt": { "type": "string", "format": "date-time" },
+        "filledAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["kidId", "rewardTitle", "rewardIcon", "cost", "type", "status", "purchasedAt"]
+    }
+  },
+  "firestore": {
+    "/kids/{kidId}": { "schema": "Kid", "description": "Kids in the family" },
+    "/chores/{choreId}": { "schema": "Chore", "description": "Master chore definitions" },
+    "/tasks/{taskId}": { "schema": "TaskInstance", "description": "Individual task records" },
+    "/rewards/{rewardId}": { "schema": "Reward", "description": "Rewards catalog" },
+    "/transactions/{transactionId}": { "schema": "Transaction", "description": "History of star changes" },
+    "/fulfillments/{fulfillmentId}": { "schema": "Fulfillment", "description": "Tracking of reward fulfillment" },
+    "/config/categories": { "schema": "CategoryOrder", "description": "Order of categories" },
+    "/config/auth": { "schema": "PasscodeConfig", "description": "Parent passcode configuration" }
+  }
+}
