@@ -98,19 +98,22 @@ export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
   if (typeof window === 'undefined' || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices();
   if (!voices || voices.length === 0) return null;
-
-  const gentleVoice = voices.find(v => 
-    (v.name.includes('Google') && v.name.includes('English')) || 
-    v.name.includes('Samantha') || 
-    v.name.includes('Zira') || 
-    v.name.includes('Female') ||
-    (v.name.toLowerCase().includes('google') && v.name.toLowerCase().includes('english')) || 
-    v.name.toLowerCase().includes('samantha') || 
-    v.name.toLowerCase().includes('zira') || 
-    v.name.toLowerCase().includes('female')
+  const ukFemale = voices.find(v => 
+    v.lang.toLowerCase().includes('en-gb') && 
+    (v.name.includes('Female') || v.name.includes('Serena') || v.name.includes('Susan') || v.name.includes('Hazel') || v.name.includes('Kate') || v.name.includes('Sonia'))
   );
-
-  return gentleVoice || voices[0] || null;
+  if (ukFemale) return ukFemale;
+  const anyFemaleEnglish = voices.find(v => 
+    v.lang.toLowerCase().startsWith('en') && 
+    !v.name.toLowerCase().includes('male') &&
+    (v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Zira') || v.name.includes('Karen') || v.name.includes('Moira') || v.name.includes('Tessa'))
+  );
+  if (anyFemaleEnglish) return anyFemaleEnglish;
+  const generalFemale = voices.find(v => v.name.toLowerCase().includes('female'));
+  if (generalFemale) return generalFemale;
+  const ukFallback = voices.find(v => v.lang.toLowerCase().includes('en-gb'));
+  if (ukFallback) return ukFallback;
+  return voices[0] || null;
 };
 
 export default function KidsDashboard() {
@@ -262,22 +265,11 @@ const triggerCelebration = (avatar: string, color: string) => {
         utterance.rate = 0.90; // Keeps it bouncy and energetic, but clear and human
         utterance.pitch = 1.1; // Slightly elevated for enthusiasm, but avoiding the squeaky chipmunk effect
 
-        // Target the friendly British English female voice profiles explicitly
-        const voices = window.speechSynthesis.getVoices();
-        const preferredVoice = voices.find(v => 
-          v.lang.toLowerCase().includes('en-gb') && 
-          (v.name.includes('Female') || v.name.includes('Serena') || v.name.includes('Susan') || v.name.includes('Hazel') || v.name.includes('Kate'))
-        ) || voices.find(v => 
-          v.lang.toLowerCase().includes('en-gb')
-        ) || voices.find(v => 
-          v.name.includes('Samantha') || v.name.includes('Zira') || v.name.includes('Female')
-        );
-
+        const preferredVoice = getCheerfulFemaleVoice();
         if (preferredVoice) {
           utterance.voice = preferredVoice;
         }
 
-        // Slight offset so the opening singing chord music triggers first to build anticipation
         setTimeout(() => {
           window.speechSynthesis.speak(utterance);
         }, 150);
@@ -458,26 +450,21 @@ const triggerCelebration = (avatar: string, color: string) => {
 
     const workAheadTasks = otherTasks.filter(t => {
       const chore = chores.find(c => c.id === t.choreId);
-      // Exclude weekly chores that occur on specific days of the week from work-ahead listings on other days
       if (chore && chore.frequency === 'weekly' && chore.days && chore.days.length > 0) {
         return false;
       }
       if (t.status === 'completed') {
-        // If it was completed TODAY but was due in the future
         const compDateStr = typeof t.completedAt === 'string' ? t.completedAt.split('T')[0] : '';
         return compDateStr === todayStr && t.dueDate > todayStr && t.dueDate <= weekEndStr;
       } else {
-        // Pending future tasks for specific frequencies
         const isHighFrequency = chore && (chore.frequency === 'weekly' || chore.frequency === 'by-deadline' || chore.frequency === 'monthly');
         return isHighFrequency && t.dueDate > todayStr && t.dueDate <= weekEndStr;
       }
     });
 
-    // Combine and deduplicate: Only show ONE pending instance per chore for future/overdue to avoid clutter
     const combined = [...dayTasks];
     const seenChoreIds = new Set(dayTasks.map(t => t.choreId));
 
-    // Add overdue (don't add if already showing a task for this chore today)
     overdueTasks.forEach(t => {
       if (!seenChoreIds.has(t.choreId)) {
         combined.push(t);
