@@ -30,20 +30,23 @@ function AgreementModal({
 
   const allAgreed = agreedKids.size === kids.length && kids.length > 0;
 
-  const speak = () => {
+const speak = () => {
     if ('speechSynthesis' in window) {
       const perPerson = Math.ceil(reward.cost / (kids.length || 1));
       const text = `Do You All Agree? Together, this prize costs ${reward.cost} stars. That means everyone contributes ${perPerson} stars each. Tap your critter if you agree to spend them on ${reward.title}!`;
       const utterance = new SpeechSynthesisUtterance(text);
       const voices = window.speechSynthesis.getVoices();
+      
       const gentleVoice = voices.find(v => 
-        (v.name.includes('Google') && v.name.includes('English')) || 
-        v.name.includes('Samantha') || 
-        v.name.includes('Zira') || 
-        v.name.includes('Female')
+        v.lang.toLowerCase().includes('en-gb') && 
+        (v.name.includes('Female') || v.name.includes('Serena') || v.name.includes('Susan') || v.name.includes('Hazel') || v.name.includes('Kate'))
+      ) || voices.find(v => 
+        v.lang.toLowerCase().includes('en-gb')
+      ) || voices.find(v => 
+        v.name.includes('Samantha') || v.name.includes('Zira') || v.name.includes('Female')
       );
       if (gentleVoice) utterance.voice = gentleVoice;
-      utterance.rate = 0.85;
+      utterance.rate = 1.0;
       utterance.pitch = 1.0;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utterance);
