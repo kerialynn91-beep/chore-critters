@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, onSnapshot, where, doc, getDocs, writeBatch, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Kid, Chore, TaskInstance, Reward, Fulfillment } from '../types';
-import { useWorkspace } from '../context/WorkspaceContext';
+import { useWorkspace } from '../WorkspaceContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { Star, ArrowLeft, Sparkles, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Volume2, CheckCircle, XCircle, Gift, Users } from 'lucide-react';
 import { format, startOfWeek, addDays, isSameDay, eachDayOfInterval, endOfWeek, isBefore, startOfDay } from 'date-fns';
