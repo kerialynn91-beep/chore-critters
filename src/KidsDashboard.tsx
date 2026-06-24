@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, onSnapshot, where, doc, getDocs, writeBatch, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Kid, Chore, TaskInstance, Reward, Fulfillment } from '../types';
-import { useWorkspace } from './WorkspaceContext';
+import { useWorkspace } from '../context/WorkspaceContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { Star, ArrowLeft, Sparkles, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Volume2, CheckCircle, XCircle, Gift, Users } from 'lucide-react';
 import { format, startOfWeek, addDays, isSameDay, eachDayOfInterval, endOfWeek, isBefore, startOfDay } from 'date-fns';
@@ -14,19 +14,35 @@ const HABITATS = {
   FARM: 'farm',
   OCEAN: 'ocean',
   DOMESTIC: 'domestic',
-  GARDEN: 'garden'
+  GARDEN: 'garden',
+  BIRD: 'bird'
 } as const;
 
 type HabitatType = typeof HABITATS[keyof typeof HABITATS];
 
 const getHabitatForAvatar = (avatar: string): HabitatType => {
-  const categories = {
-    [HABITATS.JUNGLE]: ['🐯', '🦁', '🐵', '🦍', '🐘', '🦛', '🦏', '🦒', '🐆', '🦓', '🐅', '🐍', '🦎', '🐊', '🐒'],
-    [HABITATS.FANTASY]: ['🦄', '🐉', '🐲', '🦕', '🦖', '🦇', '🐺'],
-    [HABITATS.FARM]: ['🐮', '🐷', '🐔', '🐣', '🐤', '🐑', '🐐', '🐄', '🐎', '🐏', '🐃', '🐂'],
-    [HABITATS.OCEAN]: ['🐙', '🦑', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐚', '🐢', '🐧', '🦆'],
-    [HABITATS.DOMESTIC]: ['🐶', '🐱', '🐹', '🐕', '🐈', '🦔', '🐿️'],
-    [HABITATS.GARDEN]: ['🦋', '🐰', '🐇', '🐝', '🐛', '🐌', '🐞', '🐜', '🐦', '🦅', '🦉', '🦊', '🐻', '🐼', '🐨', '🦘', '🦌', '🐗']
+  const categories: Record<HabitatType, string[]> = {
+    [HABITATS.JUNGLE]: [
+      '🐯', '🦁', '🐵', '🦍', '🐘', '🦛', '🦏', '🦒', '🐆', '🦓', '🐅', '🐍', '🦎', '🐊', '🐒'
+    ],
+    [HABITATS.FANTASY]: [
+      '🦄', '🐉', '🐲', '🦕', '🦖', '🦇', '🐺'
+    ],
+    [HABITATS.FARM]: [
+      '🐮', '🐷', '🐔', '🐣', '🐤', '🐑', '🐐', '🐄', '🐎', '🐏', '🐃', '🐂', '🐴'
+    ],
+    [HABITATS.OCEAN]: [
+      '🐙', '🦑', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐚', '🐢', '🐧'
+    ],
+    [HABITATS.DOMESTIC]: [
+      '🐶', '🐱', '🐹', '🐕', '🐈', '🦔', '🐿️', '🐭'
+    ],
+    [HABITATS.BIRD]: [
+      '🐦', '🦅', '🦉', '🦆'
+    ],
+    [HABITATS.GARDEN]: [
+      '🦋', '🐰', '🐇', '🐝', '🐛', '🐌', '🐞', '🐜', '🦊', '🐻', '🐼', '🐨', '🦘', '🦌', '🐗', '🐸'
+    ]
   };
 
   for (const [habitat, emojis] of Object.entries(categories)) {
@@ -36,6 +52,49 @@ const getHabitatForAvatar = (avatar: string): HabitatType => {
 };
 
 const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => {
+  const getStyles = () => {
+    switch (habitat) {
+      case 'bird':
+        return { gradient: 'from-sky-300 via-sky-200 to-white', image: '/7.png' };
+      case 'fantasy':
+        return { gradient: 'from-sky-400 via-sky-200 to-white', image: '/8.png' };
+      case 'jungle':
+        return { gradient: 'from-emerald-900 to-green-950', image: '/4.png' };
+      case 'farm':
+        return { gradient: 'from-amber-50 to-sky-200', image: '/2.png' };
+      case 'ocean':
+        return { gradient: 'from-sky-400 via-cyan-800 to-blue-950', image: '/Untitled design (26).png' };
+      case 'domestic':
+        return { gradient: 'from-amber-100 via-rose-50 to-orange-100/95', image: '/6.png' };
+      case 'garden':
+        return { gradient: 'from-amber-100 to-green-300', image: '/Chore Critters habitats.png' };
+      case 'picker':
+      default:
+        return { gradient: 'from-slate-800 via-slate-900 to-slate-950', image: null };
+    }
+  };
+
+  const { gradient, image } = getStyles();
+
+  return (
+    <div className={`fixed inset-0 z-0 bg-gradient-to-b ${gradient} transition-all duration-1000 overflow-hidden`}>
+      {image && (
+        <img
+          src={image}
+          alt={habitat}
+          className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none opacity-90 animate-in fade-in duration-1000"
+          referrerPolicy="no-referrer"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _ignored_HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => {
   const getStyles = () => {
     switch (habitat) {
       case 'jungle':
@@ -348,7 +407,7 @@ const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => 
       }
       case 'garden':
         return {
-          gradient: 'from-amber-150 to-green-300',
+          gradient: 'from-amber-100 to-green-300',
           pattern: (
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
               <div className="absolute top-8 left-12 w-28 h-28 rounded-full bg-yellow-300/40 border border-yellow-200/20 blur-xl animate-pulse" />
@@ -423,6 +482,26 @@ const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => 
   );
 };
 
+// Robust helper to retrieve a friendly, cheerful female voice
+export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
+  if (typeof window === 'undefined' || !window.speechSynthesis) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return null;
+
+  const gentleVoice = voices.find(v => 
+    (v.name.includes('Google') && v.name.includes('English')) || 
+    v.name.includes('Samantha') || 
+    v.name.includes('Zira') || 
+    v.name.includes('Female') ||
+    (v.name.toLowerCase().includes('google') && v.name.toLowerCase().includes('english')) || 
+    v.name.toLowerCase().includes('samantha') || 
+    v.name.toLowerCase().includes('zira') || 
+    v.name.toLowerCase().includes('female')
+  );
+
+  return gentleVoice || voices[0] || null;
+};
+
 export default function KidsDashboard() {
   const { getCollectionName, mode, workspaceId, familyName } = useWorkspace();
   const { kidId } = useParams();
@@ -434,8 +513,17 @@ export default function KidsDashboard() {
   const [chores, setChores] = useState<Chore[]>([]);
 
   const validTasks = React.useMemo(() => {
-    return tasks.filter(t => chores.some(c => c.id === t.choreId) || t.status === 'completed' || !!t.choreTitle);
-  }, [tasks, chores]);
+    return tasks.filter(t => {
+      const chore = chores.find(c => c.id === t.choreId);
+      if (!chore) {
+        return t.status === 'completed' || !!t.choreTitle;
+      }
+      if (t.status === 'pending' && (!chore.assignedTo || !chore.assignedTo.includes(selectedKid?.id || ''))) {
+        return false;
+      }
+      return true;
+    });
+  }, [tasks, chores, selectedKid?.id]);
 
   const [fulfillments, setFulfillments] = useState<Fulfillment[]>([]);
   const [categoryOrder, setCategoryOrder] = useState<string[]>([]);
@@ -564,14 +652,8 @@ export default function KidsDashboard() {
         utterance.rate = 1.35; // Fast, bouncy, cheerful tempo to fit under 2 seconds!
         utterance.pitch = 1.45; // Sweet, high-pitched, childish and super enthusiastic
 
-        // Select an optimal kid-friendly/high-pitched english voice if available
-        const voices = window.speechSynthesis.getVoices();
-        const preferredVoice = voices.find(v => 
-          (v.name.includes('Google') && v.name.includes('English')) || 
-          v.name.includes('Samantha') || 
-          v.name.includes('Zira') || 
-          v.lang.startsWith('en-')
-        );
+        // Select an optimal, happy and cheerful female English voice
+        const preferredVoice = getCheerfulFemaleVoice();
         if (preferredVoice) {
           utterance.voice = preferredVoice;
         }
@@ -587,6 +669,20 @@ export default function KidsDashboard() {
 
     setTimeout(() => setShowCelebration(null), 3000);
   };
+
+  // Warm up and initialize speech synthesis voices to ensure instant cheerful female voice availability
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      const handleVoicesChanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+      window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged);
+      return () => {
+        window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
+      };
+    }
+  }, []);
 
   useEffect(() => {
     const unsubKids = onSnapshot(collection(db, getCollectionName('kids')), (snapshot) => {
@@ -705,7 +801,7 @@ export default function KidsDashboard() {
                  pointsValue: chore.points,
                  isBonus: chore.isBonus || false,
                   choreTitle: chore.title,
-                  choreIcon: chore.icon,
+                  choreIcon: chore.icon || '🚀',
                   choreCategory: chore.category || ''
                });
                allExistingChoreIds.add(chore.id);
@@ -909,14 +1005,7 @@ export default function KidsDashboard() {
   const speak = (text: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
-      const voices = window.speechSynthesis.getVoices();
-      // Try to find a gentle female voice
-      const gentleVoice = voices.find(v => 
-        (v.name.includes('Google') && v.name.includes('English')) || 
-        v.name.includes('Samantha') || 
-        v.name.includes('Zira') || 
-        v.name.includes('Female')
-      );
+      const gentleVoice = getCheerfulFemaleVoice();
       if (gentleVoice) utterance.voice = gentleVoice;
       utterance.rate = 0.85; // Slightly slower for clarity
       utterance.pitch = 1.0;  // More natural pitch
@@ -1610,13 +1699,7 @@ function ChoreCard({ task, chore, kid, isPastDate = false, onComplete }: { task:
     if ('speechSynthesis' in window) {
       const text = `${chore?.title || 'Task'}. Worth ${task.pointsValue} stars.`;
       const utterance = new SpeechSynthesisUtterance(text);
-      const voices = window.speechSynthesis.getVoices();
-      const gentleVoice = voices.find(v => 
-        (v.name.includes('Google') && v.name.includes('English')) || 
-        v.name.includes('Samantha') || 
-        v.name.includes('Zira') || 
-        v.name.includes('Female')
-      );
+      const gentleVoice = getCheerfulFemaleVoice();
       if (gentleVoice) utterance.voice = gentleVoice;
       utterance.rate = 0.85;
       utterance.pitch = 1.0;
@@ -1793,13 +1876,7 @@ function RewardCard({ reward, kid }: { reward: Reward, kid: Kid, key?: React.Key
     if ('speechSynthesis' in window) {
       const text = `${reward.title}. Costs ${reward.cost} stars. ${canAfford ? 'You have enough stars!' : `You need ${reward.cost - (kid.stars || 0)} more stars.`}`;
       const utterance = new SpeechSynthesisUtterance(text);
-      const voices = window.speechSynthesis.getVoices();
-      const gentleVoice = voices.find(v => 
-        (v.name.includes('Google') && v.name.includes('English')) || 
-        v.name.includes('Samantha') || 
-        v.name.includes('Zira') || 
-        v.name.includes('Female')
-      );
+      const gentleVoice = getCheerfulFemaleVoice();
       if (gentleVoice) utterance.voice = gentleVoice;
       utterance.rate = 0.85;
       utterance.pitch = 1.0;
