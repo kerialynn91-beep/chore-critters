@@ -94,6 +94,7 @@ const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => 
 };
 
 // Robust helper
+// Robust helper to retrieve a friendly, cheerful female voice
 export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
   if (typeof window === 'undefined' || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices();
@@ -110,6 +111,17 @@ export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
   });
 
   const targetVoices = filteredVoices.length > 0 ? filteredVoices : voices;
+
+  // 1. FIRST CHOICE: Any clear English Female voices (US/AU/etc. - This brings back the younger/American voice!)
+  const anyFemale = targetVoices.find(v => {
+    const lang = v.lang.toLowerCase();
+    const name = v.name.toLowerCase();
+    return lang.startsWith('en') && 
+      (name.includes('female') || name.includes('samantha') || name.includes('zira') || name.includes('victoria') || name.includes('karen') || name.includes('moira') || name.includes('tessa') || name.includes('catherine'));
+  });
+  if (anyFemale) return anyFemale;
+
+  // 2. SECOND CHOICE: Premium British English Female voices (Fallback)
   const ukFemale = targetVoices.find(v => {
     const lang = v.lang.toLowerCase();
     const name = v.name.toLowerCase();
@@ -117,11 +129,7 @@ export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
       (name.includes('female') || name.includes('serena') || name.includes('susan') || name.includes('hazel') || name.includes('kate') || name.includes('martha') || name.includes('sonia'));
   });
   if (ukFemale) return ukFemale;
-  const anyFemale = targetVoices.find(v => {
-    const name = v.name.toLowerCase();
-    return name.includes('female') || name.includes('samantha') || name.includes('zira') || name.includes('victoria') || name.includes('karen') || name.includes('moira') || name.includes('tessa') || name.includes('catherine');
-  });
-  if (anyFemale) return anyFemale;
+  
   const ukFallback = targetVoices.find(v => v.lang.toLowerCase().includes('en-gb'));
   if (ukFallback) return ukFallback;
   return targetVoices[0] || null;
