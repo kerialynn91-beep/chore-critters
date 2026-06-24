@@ -262,8 +262,8 @@ const triggerCelebration = (avatar: string, color: string) => {
         const selectedSong = songs[Math.floor(Math.random() * songs.length)];
         
         const utterance = new SpeechSynthesisUtterance(selectedSong);
-        utterance.rate = 0.90; // Keeps it bouncy and energetic, but clear and human
-        utterance.pitch = 1.1; // Slightly elevated for enthusiasm, but avoiding the squeaky chipmunk effect
+        utterance.rate = 1.25; // Fast, bouncy, cheerful tempo to fit under 2 seconds!
+        utterance.pitch = 1.45; // Sweet, high-pitched, childish and super enthusiastic
 
         const preferredVoice = getCheerfulFemaleVoice();
         if (preferredVoice) {
