@@ -156,6 +156,22 @@ export default function KidsDashboard() {
   const [interceptReward, setInterceptReward] = useState<Reward | null>(null);
   const [showCelebration, setShowCelebration] = useState<{ avatar: string; color: string } | null>(null);
 
+  // Warm up and initialize speech synthesis voices to ensure they are ready instantly
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      
+      const handleVoicesChanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+      
+      window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged);
+      return () => {
+        window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
+      };
+    }
+  }, []);
+
 const triggerCelebration = (avatar: string, color: string) => {
     setShowCelebration({ avatar, color });
     
