@@ -142,7 +142,7 @@ export default function KidsDashboard() {
   const [interceptReward, setInterceptReward] = useState<Reward | null>(null);
   const [showCelebration, setShowCelebration] = useState<{ avatar: string; color: string } | null>(null);
 
-  const triggerCelebration = (avatar: string, color: string) => {
+const triggerCelebration = (avatar: string, color: string) => {
     setShowCelebration({ avatar, color });
     
     // Play a delightful, programmatically synthesized 2-3 second happy celebration jingle
@@ -202,7 +202,6 @@ export default function KidsDashboard() {
         };
 
         // Synthesize an adorable, harmonized 3-voice chord sequence that slides musically upwards in C Major:
-        // Chord 1 (Root, 3rd, 5th): C5 (523.25) -> Chord 2: D5 (587.33) -> Chord 3: E5 (659.25)
         createCuteVocalVoice(523.25, [
           { t: 0.22, f: 587.33 },
           { t: 0.44, f: 659.25 }
@@ -260,11 +259,20 @@ export default function KidsDashboard() {
         const selectedSong = songs[Math.floor(Math.random() * songs.length)];
         
         const utterance = new SpeechSynthesisUtterance(selectedSong);
-        utterance.rate = 1.35; // Fast, bouncy, cheerful tempo to fit under 2 seconds!
-        utterance.pitch = 1.45; // Sweet, high-pitched, childish and super enthusiastic
+        utterance.rate = 0.90; // Keeps it bouncy and energetic, but clear and human
+        utterance.pitch = 1.1; // Slightly elevated for enthusiasm, but avoiding the squeaky chipmunk effect
 
-        // Select an optimal, happy and cheerful female English voice
-        const preferredVoice = getCheerfulFemaleVoice();
+        // Target the friendly British English female voice profiles explicitly
+        const voices = window.speechSynthesis.getVoices();
+        const preferredVoice = voices.find(v => 
+          v.lang.toLowerCase().includes('en-gb') && 
+          (v.name.includes('Female') || v.name.includes('Serena') || v.name.includes('Susan') || v.name.includes('Hazel') || v.name.includes('Kate'))
+        ) || voices.find(v => 
+          v.lang.toLowerCase().includes('en-gb')
+        ) || voices.find(v => 
+          v.name.includes('Samantha') || v.name.includes('Zira') || v.name.includes('Female')
+        );
+
         if (preferredVoice) {
           utterance.voice = preferredVoice;
         }
@@ -280,20 +288,6 @@ export default function KidsDashboard() {
 
     setTimeout(() => setShowCelebration(null), 3000);
   };
-
-  // Warm up and initialize speech synthesis voices to ensure instant cheerful female voice availability
-  useEffect(() => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.getVoices();
-      const handleVoicesChanged = () => {
-        window.speechSynthesis.getVoices();
-      };
-      window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged);
-      return () => {
-        window.speechSynthesis.removeEventListener('voiceschanged', handleVoicesChanged);
-      };
-    }
-  }, []);
 
   useEffect(() => {
     const unsubKids = onSnapshot(collection(db, getCollectionName('kids')), (snapshot) => {
