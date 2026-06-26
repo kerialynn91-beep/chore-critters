@@ -15,7 +15,9 @@ const HABITATS = {
   OCEAN: 'ocean',
   DOMESTIC: 'domestic',
   GARDEN: 'garden',
-  BIRD: 'bird'
+  BIRD: 'bird',
+  WOODS: 'woods',
+  DESERT: 'desert',
 } as const;
 
 type HabitatType = typeof HABITATS[keyof typeof HABITATS];
@@ -23,26 +25,35 @@ type HabitatType = typeof HABITATS[keyof typeof HABITATS];
 const getHabitatForAvatar = (avatar: string): HabitatType => {
   const categories: Record<HabitatType, string[]> = {
     [HABITATS.JUNGLE]: [
-      '🐯', '🦁', '🐵', '🦍', '🐘', '🦛', '🦏', '🦒', '🐆', '🦓', '🐅', '🐍', '🦎', '🐊', '🐒'
+      '🐯', '🦁', '🐵', '🦍', '🐘', '🦛', '🦏', '🐆', '🐅', '🐍', '🦎', '🐊', '🐒','🐼', '🦕', '🦖','🐨',
     ],
     [HABITATS.FANTASY]: [
-      '🦄', '🐉', '🐲', '🦕', '🦖', '🦇', '🐺'
+      '🦄', '🐉', '🐲'
     ],
     [HABITATS.FARM]: [
       '🐮', '🐷', '🐔', '🐣', '🐤', '🐑', '🐐', '🐄', '🐎', '🐏', '🐃', '🐂', '🐴'
     ],
     [HABITATS.OCEAN]: [
-      '🐙', '🦑', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐚', '🐢', '🐧'
+      '🐙', '🦑', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐚', '🐧'
     ],
     [HABITATS.DOMESTIC]: [
-      '🐶', '🐱', '🐹', '🐕', '🐈', '🦔', '🐿️', '🐭'
+      '🐶', '🐱', '🐕','🐈'
     ],
     [HABITATS.BIRD]: [
-      '🐦', '🦅', '🦉', '🦆'
+      '🐦', '🦅', 
     ],
     [HABITATS.GARDEN]: [
-      '🦋', '🐰', '🐇', '🐝', '🐛', '🐌', '🐞', '🐜', '🦊', '🐻', '🐼', '🐨', '🦘', '🦌', '🐗', '🐸'
-    ]
+      '🦋', '🐰', '🐇', '🐝', '🐛', '🐌', '🐞', '🐜', 
+    ],
+     [HABITATS.WOODS]: [
+       '🐺', '🐻', '🐗', '🦇', '🦉', '🦌', '🦊', '🐿️', '🦔', '🐭','🐹',
+    ],
+    [HABITATS.DESERT]: [
+      '🦘','🦒','🦓',
+    ],
+    [HABITATS.POND]: [
+      '🐸', '🐢', '🦆'
+    ],
   };
 
   for (const [habitat, emojis] of Object.entries(categories)) {
@@ -67,6 +78,12 @@ const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => 
       case 'domestic':
         return { gradient: 'from-amber-100 via-rose-50 to-orange-100/95', image: '/6.png' };
       case 'garden':
+        return { gradient: 'from-amber-100 to-green-300', image: '/Chore Critters habitats.png' };
+      case 'woods':
+        return { gradient: 'from-amber-100 to-green-300', image: '/Chore Critters habitats.png' };
+      case 'desert':
+        return { gradient: 'from-amber-100 to-green-300', image: '/Chore Critters habitats.png' };
+      case 'pond':
         return { gradient: 'from-amber-100 to-green-300', image: '/Chore Critters habitats.png' };
       case 'picker':
       default:
