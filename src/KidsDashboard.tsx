@@ -18,6 +18,7 @@ const HABITATS = {
   BIRD: 'bird',
   WOODS: 'woods',
   DESERT: 'desert',
+  POND: 'pond',
 } as const;
 
 type HabitatType = typeof HABITATS[keyof typeof HABITATS];
