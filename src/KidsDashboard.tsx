@@ -76,15 +76,15 @@ const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => 
       case 'ocean':
         return { gradient: 'from-sky-400 via-cyan-800 to-blue-950', image: '/Untitled design (26).png' };
       case 'domestic':
-        return { gradient: 'from-amber-100 via-rose-50 to-orange-100/95', image: '/6.png' };
+        return { gradient: 'from-amber-100 via-rose-50 to-orange-100/95', image: '/Domestic.png' };
       case 'garden':
         return { gradient: 'from-amber-100 to-green-300', image: '/Chore Critters habitats.png' };
       case 'woods':
-        return { gradient: 'from-amber-100 to-green-300', image: '/Chore Critters habitats.png' };
+        return { gradient: 'from-amber-100 to-green-300', image: '/Forest.png' };
       case 'desert':
-        return { gradient: 'from-amber-100 to-green-300', image: '/Chore Critters habitats.png' };
+        return { gradient: 'from-amber-100 to-green-300', image: '/Desert.png' };
       case 'pond':
-        return { gradient: 'from-amber-100 to-green-300', image: '/Chore Critters habitats.png' };
+        return { gradient: 'from-amber-100 to-green-300', image: '/Pond.png' };
       case 'picker':
       default:
         return { gradient: 'from-slate-800 via-slate-900 to-slate-950', image: null };
