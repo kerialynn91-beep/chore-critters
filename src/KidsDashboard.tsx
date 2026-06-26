@@ -25,7 +25,7 @@ type HabitatType = typeof HABITATS[keyof typeof HABITATS];
 const getHabitatForAvatar = (avatar: string): HabitatType => {
   const categories: Record<HabitatType, string[]> = {
     [HABITATS.JUNGLE]: [
-      '🐯', '🦁', '🐵', '🦍', '🐘', '🦛', '🦏', '🐆', '🐅', '🐍', '🦎', '🐊', '🐒','🐼', '🦕', '🦖','🐨',
+      '🐯', '🐵', '🦍', '🐘', '🦛', '🦏', '🐆', '🐅', '🐍', '🦎', '🐊', '🐒', '🐼', '🦕', '🦖', '🐨', '🦜'
     ],
     [HABITATS.FANTASY]: [
       '🦄', '🐉', '🐲'
@@ -34,25 +34,25 @@ const getHabitatForAvatar = (avatar: string): HabitatType => {
       '🐮', '🐷', '🐔', '🐣', '🐤', '🐑', '🐐', '🐄', '🐎', '🐏', '🐃', '🐂', '🐴'
     ],
     [HABITATS.OCEAN]: [
-      '🐙', '🦑', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐚', '🐧'
+      '🐙', '🦑', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐚', '🐧', '🪼',
     ],
     [HABITATS.DOMESTIC]: [
-      '🐶', '🐱', '🐕','🐈'
+      '🐶', '🐱', '🐕', '🐈', '🐈‍⬛'
     ],
     [HABITATS.BIRD]: [
-      '🐦', '🦅', 
+      '🐦', '🦅', '🐦‍⬛'
     ],
     [HABITATS.GARDEN]: [
       '🦋', '🐰', '🐇', '🐝', '🐛', '🐌', '🐞', '🐜', 
     ],
      [HABITATS.WOODS]: [
-       '🐺', '🐻', '🐗', '🦇', '🦉', '🦌', '🦊', '🐿️', '🦔', '🐭','🐹',
+       '🐺', '🐻', '🐗', '🦇', '🦉', '🦌', '🦊', '🐿️', '🦔', '🐭','🐹', '🕷️', '🦫'
     ],
     [HABITATS.DESERT]: [
-      '🦘','🦒','🦓',
+      '🦘','🦒','🦓', '🦁',
     ],
     [HABITATS.POND]: [
-      '🐸', '🐢', '🦆'
+      '🐸', '🐢', '🦆', '🦩'
     ],
   };
 
