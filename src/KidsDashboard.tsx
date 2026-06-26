@@ -93,13 +93,13 @@ const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => 
   );
 };
 
-// Robust helper
 // Robust helper to retrieve a friendly, cheerful female voice
 export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
   if (typeof window === 'undefined' || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices();
   if (!voices || voices.length === 0) return null;
 
+  // 1. Instantly ban any explicitly male names so non-Apple devices don't break
   const bannedMaleNames = ['male', 'daniel', 'george', 'arthur', 'alex', 'fred', 'bruce', 'rishi', 'aaron', 'gordon', 'mark'];
   
   const filteredVoices = voices.filter(v => {
@@ -112,26 +112,20 @@ export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
 
   const targetVoices = filteredVoices.length > 0 ? filteredVoices : voices;
 
-  // 1. FIRST CHOICE: Any clear English Female voices (US/AU/etc. - This brings back the younger/American voice!)
-  const anyFemale = targetVoices.find(v => {
-    const lang = v.lang.toLowerCase();
+  // 2. THE ORIGINAL iPad / AMERICAN VOICE (The chipper one you liked!)
+  const originalChipperVoice = targetVoices.find(v => {
     const name = v.name.toLowerCase();
-    return lang.startsWith('en') && 
-      (name.includes('female') || name.includes('samantha') || name.includes('zira') || name.includes('victoria') || name.includes('karen') || name.includes('moira') || name.includes('tessa') || name.includes('catherine'));
+    return name.includes('samantha') || 
+           name.includes('zira') || 
+           (name.includes('google') && name.includes('english') && !name.includes('uk'));
   });
+  if (originalChipperVoice) return originalChipperVoice;
+
+  // 3. Fallback to any general female voice if Samantha is missing
+  const anyFemale = targetVoices.find(v => v.name.toLowerCase().includes('female'));
   if (anyFemale) return anyFemale;
 
-  // 2. SECOND CHOICE: Premium British English Female voices (Fallback)
-  const ukFemale = targetVoices.find(v => {
-    const lang = v.lang.toLowerCase();
-    const name = v.name.toLowerCase();
-    return lang.includes('en-gb') && 
-      (name.includes('female') || name.includes('serena') || name.includes('susan') || name.includes('hazel') || name.includes('kate') || name.includes('martha') || name.includes('sonia'));
-  });
-  if (ukFemale) return ukFemale;
-  
-  const ukFallback = targetVoices.find(v => v.lang.toLowerCase().includes('en-gb'));
-  if (ukFallback) return ukFallback;
+  // 4. Final safety net
   return targetVoices[0] || null;
 };
 
