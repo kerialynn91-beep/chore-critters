@@ -15,7 +15,10 @@ const HABITATS = {
   OCEAN: 'ocean',
   DOMESTIC: 'domestic',
   GARDEN: 'garden',
-  BIRD: 'bird'
+  BIRD: 'bird',
+  WOODS: 'woods',
+  DESERT: 'desert',
+  POND: 'pond',
 } as const;
 
 type HabitatType = typeof HABITATS[keyof typeof HABITATS];
@@ -23,26 +26,35 @@ type HabitatType = typeof HABITATS[keyof typeof HABITATS];
 const getHabitatForAvatar = (avatar: string): HabitatType => {
   const categories: Record<HabitatType, string[]> = {
     [HABITATS.JUNGLE]: [
-      '🐯', '🦁', '🐵', '🦍', '🐘', '🦛', '🦏', '🦒', '🐆', '🦓', '🐅', '🐍', '🦎', '🐊', '🐒'
+      '🐯', '🐵', '🦍', '🐘', '🦛', '🦏', '🐆', '🐅', '🐍', '🦎', '🐊', '🐒', '🐼', '🦕', '🦖', '🐨', '🦜'
     ],
     [HABITATS.FANTASY]: [
-      '🦄', '🐉', '🐲', '🦕', '🦖', '🦇', '🐺'
+      '🦄', '🐉', '🐲'
     ],
     [HABITATS.FARM]: [
       '🐮', '🐷', '🐔', '🐣', '🐤', '🐑', '🐐', '🐄', '🐎', '🐏', '🐃', '🐂', '🐴'
     ],
     [HABITATS.OCEAN]: [
-      '🐙', '🦑', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐚', '🐢', '🐧'
+      '🐙', '🦑', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐚', '🐧', '🪼',
     ],
     [HABITATS.DOMESTIC]: [
-      '🐶', '🐱', '🐹', '🐕', '🐈', '🦔', '🐿️', '🐭'
+      '🐶', '🐱', '🐕', '🐈', '🐈‍⬛'
     ],
     [HABITATS.BIRD]: [
-      '🐦', '🦅', '🦉', '🦆'
+      '🐦', '🦅', '🐦‍⬛'
     ],
     [HABITATS.GARDEN]: [
-      '🦋', '🐰', '🐇', '🐝', '🐛', '🐌', '🐞', '🐜', '🦊', '🐻', '🐼', '🐨', '🦘', '🦌', '🐗', '🐸'
-    ]
+      '🦋', '🐰', '🐇', '🐝', '🐛', '🐌', '🐞', '🐜', 
+    ],
+     [HABITATS.WOODS]: [
+       '🐺', '🐻', '🐗', '🦇', '🦉', '🦌', '🦊', '🐿️', '🦔', '🐭','🐹', '🕷️', '🦫'
+    ],
+    [HABITATS.DESERT]: [
+      '🦘','🦒','🦓', '🦁',
+    ],
+    [HABITATS.POND]: [
+      '🐸', '🐢', '🦆', '🦩'
+    ],
   };
 
   for (const [habitat, emojis] of Object.entries(categories)) {
@@ -65,9 +77,15 @@ const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => 
       case 'ocean':
         return { gradient: 'from-sky-400 via-cyan-800 to-blue-950', image: '/Untitled design (26).png' };
       case 'domestic':
-        return { gradient: 'from-amber-100 via-rose-50 to-orange-100/95', image: '/6.png' };
+        return { gradient: 'from-amber-100 via-rose-50 to-orange-100/95', image: '/Domestic.png' };
       case 'garden':
         return { gradient: 'from-amber-100 to-green-300', image: '/Chore Critters habitats.png' };
+      case 'woods':
+        return { gradient: 'from-amber-100 to-green-300', image: '/Forest.png' };
+      case 'desert':
+        return { gradient: 'from-amber-100 to-green-300', image: '/Desert.png' };
+      case 'pond':
+        return { gradient: 'from-amber-100 to-green-300', image: '/Pond.png' };
       case 'picker':
       default:
         return { gradient: 'from-slate-800 via-slate-900 to-slate-950', image: null };
@@ -93,13 +111,13 @@ const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => 
   );
 };
 
-// Robust helper
 // Robust helper to retrieve a friendly, cheerful female voice
 export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
   if (typeof window === 'undefined' || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices();
   if (!voices || voices.length === 0) return null;
 
+  // 1. Instantly ban any explicitly male names so non-Apple devices don't break
   const bannedMaleNames = ['male', 'daniel', 'george', 'arthur', 'alex', 'fred', 'bruce', 'rishi', 'aaron', 'gordon', 'mark'];
   
   const filteredVoices = voices.filter(v => {
@@ -112,26 +130,20 @@ export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
 
   const targetVoices = filteredVoices.length > 0 ? filteredVoices : voices;
 
-  // 1. FIRST CHOICE: Any clear English Female voices (US/AU/etc. - This brings back the younger/American voice!)
-  const anyFemale = targetVoices.find(v => {
-    const lang = v.lang.toLowerCase();
+  // 2. THE ORIGINAL iPad / AMERICAN VOICE (The chipper one you liked!)
+  const originalChipperVoice = targetVoices.find(v => {
     const name = v.name.toLowerCase();
-    return lang.startsWith('en') && 
-      (name.includes('female') || name.includes('samantha') || name.includes('zira') || name.includes('victoria') || name.includes('karen') || name.includes('moira') || name.includes('tessa') || name.includes('catherine'));
+    return name.includes('samantha') || 
+           name.includes('zira') || 
+           (name.includes('google') && name.includes('english') && !name.includes('uk'));
   });
+  if (originalChipperVoice) return originalChipperVoice;
+
+  // 3. Fallback to any general female voice if Samantha is missing
+  const anyFemale = targetVoices.find(v => v.name.toLowerCase().includes('female'));
   if (anyFemale) return anyFemale;
 
-  // 2. SECOND CHOICE: Premium British English Female voices (Fallback)
-  const ukFemale = targetVoices.find(v => {
-    const lang = v.lang.toLowerCase();
-    const name = v.name.toLowerCase();
-    return lang.includes('en-gb') && 
-      (name.includes('female') || name.includes('serena') || name.includes('susan') || name.includes('hazel') || name.includes('kate') || name.includes('martha') || name.includes('sonia'));
-  });
-  if (ukFemale) return ukFemale;
-  
-  const ukFallback = targetVoices.find(v => v.lang.toLowerCase().includes('en-gb'));
-  if (ukFallback) return ukFallback;
+  // 4. Final safety net
   return targetVoices[0] || null;
 };
 
@@ -145,15 +157,20 @@ export default function KidsDashboard() {
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [chores, setChores] = useState<Chore[]>([]);
 
-  const validTasks = React.useMemo(() => {
+  
+
+const validTasks = React.useMemo(() => {
     return tasks.filter(t => {
       const chore = chores.find(c => c.id === t.choreId);
+      
       if (!chore) {
-        return t.status === 'completed' || !!t.choreTitle;
+        return t.status === 'completed'; 
       }
-      if (t.status === 'pending' && (!chore.assignedTo || !chore.assignedTo.includes(selectedKid?.id || ''))) {
+      const isAssigned = chore.assignedTo && chore.assignedTo.includes(selectedKid?.id || '');
+      if (t.status === 'pending' && !isAssigned) {
         return false;
       }
+      
       return true;
     });
   }, [tasks, chores, selectedKid?.id]);
@@ -164,7 +181,6 @@ export default function KidsDashboard() {
   const [interceptReward, setInterceptReward] = useState<Reward | null>(null);
   const [showCelebration, setShowCelebration] = useState<{ avatar: string; color: string } | null>(null);
 
-  // Warm up and initialize speech synthesis voices to ensure they are ready instantly
   useEffect(() => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.getVoices();
@@ -453,73 +469,16 @@ const triggerCelebration = (avatar: string, color: string) => {
     generateDailyTasks();
   }, [selectedKid?.id, chores, validTasks.length > 0]); // Re-run if chores change or tasks loaded
 
-  // Refined filtering to handle work-ahead and overdue tasks without duplicates
   const selectedDateStr = format(selectedDate, 'yyyy-MM-dd');
   const today = startOfDay(new Date());
   const todayStr = format(today, 'yyyy-MM-dd');
   const isPastView = isBefore(startOfDay(selectedDate), today);
   const isToday = isSameDay(selectedDate, new Date());
-  const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
-  const weekEndStr = format(weekEnd, 'yyyy-MM-dd');
 
   const filteredTasks = React.useMemo(() => {
-    // 1. Get all tasks associated with this literal day
-    const dayTasks = validTasks.filter(t => t.dueDate === selectedDateStr);
-    
-    if (!isToday) return dayTasks;
+    return validTasks.filter(t => t.dueDate === selectedDateStr);
+  }, [validTasks, selectedDateStr]);
 
-    // 2. For Today's view, we add specific categories of extra tasks
-    const otherTasks = validTasks.filter(t => t.dueDate !== selectedDateStr);
-    
-    const overdueTasks = otherTasks.filter(t => {
-      if (t.dueDate < selectedDateStr && t.status === 'pending') {
-        const chore = chores.find(c => c.id === t.choreId);
-        // Exclude weekly chores that occur on specific days of the week from overdue listings on other days
-        if (chore && chore.frequency === 'weekly' && chore.days && chore.days.length > 0) {
-          return false;
-        }
-        return true;
-      }
-      return false;
-    });
-
-    const workAheadTasks = otherTasks.filter(t => {
-      const chore = chores.find(c => c.id === t.choreId);
-      if (chore && chore.frequency === 'weekly' && chore.days && chore.days.length > 0) {
-        return false;
-      }
-      if (t.status === 'completed') {
-        const compDateStr = typeof t.completedAt === 'string' ? t.completedAt.split('T')[0] : '';
-        return compDateStr === todayStr && t.dueDate > todayStr && t.dueDate <= weekEndStr;
-      } else {
-        const isHighFrequency = chore && (chore.frequency === 'weekly' || chore.frequency === 'by-deadline' || chore.frequency === 'monthly');
-        return isHighFrequency && t.dueDate > todayStr && t.dueDate <= weekEndStr;
-      }
-    });
-
-    const combined = [...dayTasks];
-    const seenChoreIds = new Set(dayTasks.map(t => t.choreId));
-
-    overdueTasks.forEach(t => {
-      if (!seenChoreIds.has(t.choreId)) {
-        combined.push(t);
-        seenChoreIds.add(t.choreId);
-      }
-    });
-
-    // Add work-ahead (don't add if already showing a task for this chore today/overdue)
-    workAheadTasks.forEach(t => {
-      if (!seenChoreIds.has(t.choreId)) {
-        combined.push(t);
-        seenChoreIds.add(t.choreId);
-      } else if (t.status === 'completed') {
-        // Always show what was completed today, even if it's a "duplicate" chore name (it represents work done)
-        combined.push(t);
-      }
-    });
-
-    return combined;
-  }, [validTasks, selectedDateStr, isToday, chores, todayStr, weekEndStr]);
 
   const visibleTasks = React.useMemo(() => {
     const isBonusTask = (t: TaskInstance) => {
