@@ -157,15 +157,20 @@ export default function KidsDashboard() {
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [chores, setChores] = useState<Chore[]>([]);
 
-  const validTasks = React.useMemo(() => {
+  
+
+const validTasks = React.useMemo(() => {
     return tasks.filter(t => {
       const chore = chores.find(c => c.id === t.choreId);
+      
       if (!chore) {
-        return t.status === 'completed' || !!t.choreTitle;
+        return t.status === 'completed'; 
       }
-      if (t.status === 'pending' && (!chore.assignedTo || !chore.assignedTo.includes(selectedKid?.id || ''))) {
+      const isAssigned = chore.assignedTo && chore.assignedTo.includes(selectedKid?.id || '');
+      if (t.status === 'pending' && !isAssigned) {
         return false;
       }
+      
       return true;
     });
   }, [tasks, chores, selectedKid?.id]);
@@ -176,7 +181,6 @@ export default function KidsDashboard() {
   const [interceptReward, setInterceptReward] = useState<Reward | null>(null);
   const [showCelebration, setShowCelebration] = useState<{ avatar: string; color: string } | null>(null);
 
-  // Warm up and initialize speech synthesis voices to ensure they are ready instantly
   useEffect(() => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.getVoices();
