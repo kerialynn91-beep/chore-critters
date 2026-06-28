@@ -469,73 +469,16 @@ const triggerCelebration = (avatar: string, color: string) => {
     generateDailyTasks();
   }, [selectedKid?.id, chores, validTasks.length > 0]); // Re-run if chores change or tasks loaded
 
-  // Refined filtering to handle work-ahead and overdue tasks without duplicates
   const selectedDateStr = format(selectedDate, 'yyyy-MM-dd');
   const today = startOfDay(new Date());
   const todayStr = format(today, 'yyyy-MM-dd');
   const isPastView = isBefore(startOfDay(selectedDate), today);
   const isToday = isSameDay(selectedDate, new Date());
-  const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
-  const weekEndStr = format(weekEnd, 'yyyy-MM-dd');
 
   const filteredTasks = React.useMemo(() => {
-    // 1. Get all tasks associated with this literal day
-    const dayTasks = validTasks.filter(t => t.dueDate === selectedDateStr);
-    
-    if (!isToday) return dayTasks;
+    return validTasks.filter(t => t.dueDate === selectedDateStr);
+  }, [validTasks, selectedDateStr]);
 
-    // 2. For Today's view, we add specific categories of extra tasks
-    const otherTasks = validTasks.filter(t => t.dueDate !== selectedDateStr);
-    
-    const overdueTasks = otherTasks.filter(t => {
-      if (t.dueDate < selectedDateStr && t.status === 'pending') {
-        const chore = chores.find(c => c.id === t.choreId);
-        // Exclude weekly chores that occur on specific days of the week from overdue listings on other days
-        if (chore && chore.frequency === 'weekly' && chore.days && chore.days.length > 0) {
-          return false;
-        }
-        return true;
-      }
-      return false;
-    });
-
-    const workAheadTasks = otherTasks.filter(t => {
-      const chore = chores.find(c => c.id === t.choreId);
-      if (chore && chore.frequency === 'weekly' && chore.days && chore.days.length > 0) {
-        return false;
-      }
-      if (t.status === 'completed') {
-        const compDateStr = typeof t.completedAt === 'string' ? t.completedAt.split('T')[0] : '';
-        return compDateStr === todayStr && t.dueDate > todayStr && t.dueDate <= weekEndStr;
-      } else {
-        const isHighFrequency = chore && (chore.frequency === 'weekly' || chore.frequency === 'by-deadline' || chore.frequency === 'monthly');
-        return isHighFrequency && t.dueDate > todayStr && t.dueDate <= weekEndStr;
-      }
-    });
-
-    const combined = [...dayTasks];
-    const seenChoreIds = new Set(dayTasks.map(t => t.choreId));
-
-    overdueTasks.forEach(t => {
-      if (!seenChoreIds.has(t.choreId)) {
-        combined.push(t);
-        seenChoreIds.add(t.choreId);
-      }
-    });
-
-    // Add work-ahead (don't add if already showing a task for this chore today/overdue)
-    workAheadTasks.forEach(t => {
-      if (!seenChoreIds.has(t.choreId)) {
-        combined.push(t);
-        seenChoreIds.add(t.choreId);
-      } else if (t.status === 'completed') {
-        // Always show what was completed today, even if it's a "duplicate" chore name (it represents work done)
-        combined.push(t);
-      }
-    });
-
-    return combined;
-  }, [validTasks, selectedDateStr, isToday, chores, todayStr, weekEndStr]);
 
   const visibleTasks = React.useMemo(() => {
     const isBonusTask = (t: TaskInstance) => {
