@@ -181,7 +181,7 @@ const HabitatBackground = ({ habitat }: { habitat: 'picker' | 'family' }) => {
                       top: `${Math.random() * 100}%`,
                     }}
                   >
-                    {['🌳', '🌲', '🍃', '✨', '🏰'][Math.floor(Math.random() * 5)]}
+                    {['🐶', '🦋', '🐱', '🦖', '🐬'][Math.floor(Math.random() * 5)]}
                   </motion.div>
                ))}
             </div>
