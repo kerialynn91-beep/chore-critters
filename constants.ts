@@ -11,7 +11,9 @@ export const ANIMAL_AVATARS = [
 
 export const COLORS = [
   '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
-  '#F06292', '#AED581', '#FFD54F', '#4DB6AC', '#7986CB'
+  '#F06292', '#AED581', '#FFD54F', '#4DB6AC', '#7986CB',
+  '#BA68C8', '#64B5F6', '#FF8A65', '#81C784', '#FFB74D',
+  '#9575CD', '#4DD0E1', '#F48FB1', '#FFF176', '#DCE775'
 ];
 
 export const CHORE_ICONS = [
