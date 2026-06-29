@@ -56,7 +56,7 @@ const getHabitatForAvatar = (avatar: string): HabitatType => {
     [HABITATS.POND]: [
       '🐸', '🐢', '🦆', '🦩'
     ],
-    [HABITATS.OCEAN]: [
+    [HABITATS.BEACH]: [
       '🦀', '🐚', '🦞', '🦭', '🐧', '🐬',
     ],
   };
