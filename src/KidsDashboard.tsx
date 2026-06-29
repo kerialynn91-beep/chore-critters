@@ -111,16 +111,20 @@ const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => 
   );
 };
 
-// Robust helper to retrieve a friendly, cheerful female voice
+// Robust helper to retrieve a friendly, cheerful female English voice
 export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
   if (typeof window === 'undefined' || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices();
   if (!voices || voices.length === 0) return null;
 
-  // 1. Instantly ban any explicitly male names so non-Apple devices don't break
-  const bannedMaleNames = ['male', 'daniel', 'george', 'arthur', 'alex', 'fred', 'bruce', 'rishi', 'aaron', 'gordon', 'mark'];
+  // 1. STRICT LANGUAGE FILTER: Instantly disqualify all non-English accents (Goodbye, French guy!)
+  const englishVoices = voices.filter(v => v.lang.startsWith('en'));
+  const baseVoices = englishVoices.length > 0 ? englishVoices : voices;
+
+  // 2. Instantly ban explicitly male names so non-Apple devices don't break
+  const bannedMaleNames = ['male', 'daniel', 'george', 'arthur', 'alex', 'fred', 'bruce', 'rishi', 'aaron', 'gordon', 'mark', 'thomas', 'rocky', 'shelley', 'sandy', 'eddy'];
   
-  const filteredVoices = voices.filter(v => {
+  const filteredVoices = baseVoices.filter(v => {
     const name = v.name.toLowerCase();
     if (bannedMaleNames.some(banned => name.includes(banned)) && !name.includes('female')) {
       return false;
@@ -128,9 +132,9 @@ export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
     return true;
   });
 
-  const targetVoices = filteredVoices.length > 0 ? filteredVoices : voices;
+  const targetVoices = filteredVoices.length > 0 ? filteredVoices : baseVoices;
 
-  // 2. THE ORIGINAL iPad / AMERICAN VOICE (The chipper one you liked!)
+  // 3. THE ORIGINAL iPad / AMERICAN VOICE (The chipper one you liked!)
   const originalChipperVoice = targetVoices.find(v => {
     const name = v.name.toLowerCase();
     return name.includes('samantha') || 
@@ -139,12 +143,21 @@ export const getCheerfulFemaleVoice = (): SpeechSynthesisVoice | null => {
   });
   if (originalChipperVoice) return originalChipperVoice;
 
-  // 3. Fallback to any general female voice if Samantha is missing
-  const anyFemale = targetVoices.find(v => v.name.toLowerCase().includes('female'));
-  if (anyFemale) return anyFemale;
+  // 4. Fallback to generic female identifiers or known Apple female voices
+  const fallbackFemale = targetVoices.find(v => {
+    const name = v.name.toLowerCase();
+    return name.includes('female') || 
+           name.includes('victoria') || 
+           name.includes('karen') || 
+           name.includes('moira') || 
+           name.includes('tessa') ||
+           name.includes('ava');
+  });
+  if (fallbackFemale) return fallbackFemale;
 
-  // 4. Final safety net
-  return targetVoices[0] || null;
+  // 5. Final safety net: Grab the system's default English voice, or the first English voice available
+  const defaultEnglish = targetVoices.find(v => v.default && v.lang.startsWith('en-US')) || targetVoices[0];
+  return defaultEnglish || null;
 };
 
 export default function KidsDashboard() {
