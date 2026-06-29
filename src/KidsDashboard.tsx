@@ -19,6 +19,8 @@ const HABITATS = {
   WOODS: 'woods',
   DESERT: 'desert',
   POND: 'pond',
+  BEACH: 'beach',
+  ICE: 'ice',
 } as const;
 
 type HabitatType = typeof HABITATS[keyof typeof HABITATS];
@@ -35,7 +37,7 @@ const getHabitatForAvatar = (avatar: string): HabitatType => {
       '🐮', '🐷', '🐔', '🐣', '🐤', '🐑', '🐐', '🐄', '🐎', '🐏', '🐃', '🐂', '🐴', '🐖', '🦙',
     ],
     [HABITATS.OCEAN]: [
-      '🐙', '🦑', '🦐', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐚', '🐧', '🪼',
+      '🐙', '🦑', '🦐', '🐡', '🐠', '🐟', '🐳', '🐋', '🦈', '🪼',
     ],
     [HABITATS.DOMESTIC]: [
       '🐶', '🐱', '🐕', '🐈', '🐈‍⬛'
@@ -54,6 +56,12 @@ const getHabitatForAvatar = (avatar: string): HabitatType => {
     ],
     [HABITATS.POND]: [
       '🐸', '🐢', '🦆', '🦩', '🦦',
+    ],
+    [HABITATS.BEACH]: [
+      '🦀', '🐚', '🦞', '🐬',
+    ],
+    [HABITATS.ICE]: [
+      '🦭', '🐧',
     ],
   };
 
@@ -86,6 +94,10 @@ const HabitatBackground = ({ habitat }: { habitat: HabitatType | 'picker' }) => 
         return { gradient: 'from-amber-100 to-green-300', image: '/Desert.png' };
       case 'pond':
         return { gradient: 'from-amber-100 to-green-300', image: '/Pond.png' };
+      case 'beach':
+        return { gradient: 'from-sky-400 via-cyan-800 to-blue-950', image: '/Beach.png' };
+      case 'ice':
+        return { gradient: 'from-sky-400 via-cyan-800 to-blue-950', image: '/Ice.png' };
       case 'picker':
       default:
         return { gradient: 'from-slate-800 via-slate-900 to-slate-950', image: null };
