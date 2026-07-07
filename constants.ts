@@ -11,10 +11,13 @@ export const ANIMAL_AVATARS = [
 ];
 
 export const COLORS = [
+ // Your Original Colors
   '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
   '#F06292', '#AED581', '#FFD54F', '#4DB6AC', '#7986CB',
+  
+  // The Refined Additions (with Brown and Gray)
   '#BA68C8', '#64B5F6', '#FF8A65', '#81C784', '#FFB74D',
-  '#9575CD', '#4DD0E1', '#F48FB1', '#FFF176', '#DCE775'
+  '#9575CD', '#FFF176', '#DCE775', '#A1887F', '#90A4AE'
 ];
 
 export const CHORE_ICONS = [
