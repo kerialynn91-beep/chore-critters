@@ -328,7 +328,7 @@ const triggerCelebration = (avatar: string, color: string) => {
         window.speechSynthesis.cancel(); // Clear any ongoing voice output
 
         const rawName = selectedKid?.name || 'superstar';
-        const kidName = rawName.trim().toLowerCase() === 'ki' ? 'Kie' : rawName;
+        const kidName = rawName.trim().toLowerCase() === 'ki' ? 'Kai' : rawName;
         const songs = [
           `Yay, ${kidName}, you did it!`,
           `Hooray, ${kidName}, great job!`,
